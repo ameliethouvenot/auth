@@ -1,9 +1,15 @@
 class ContactsController < ApplicationController
 
   def show
+    if User.find_by({"id" => session["user_id"]}) != nil
     @contact = Contact.find_by({ "id" => params["id"] })
     @company = Company.find_by({ "id" => @contact["company_id"] })
-    @activities = Activity.where({ "contact_id" => @contact["id"] })
+    @activities = Activity.where({ "contact_id" => @contact["id"], "user_id" => session["user_id"] })
+  else 
+    flash["notice"] = "Login first please"
+    redirect_to "/login"
+    
+  
   end
 
   def new
